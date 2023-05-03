@@ -266,11 +266,11 @@ print("I'm runining")
 args = parser.parse_args()
 
 if args.continual_norm:
-    from medical_deepinversion_GN import DeepInversionClass
+    from data_synthesise.medical_deepinversion_GN import DeepInversionClass
 elif args.look_back:
-    from medical_deepinversion_look_back import DeepInversionClass
+    from data_synthesise.medical_deepinversion_look_back import DeepInversionClass
 else:
-    from medical_deepinversion import DeepInversionClass
+    from data_synthesise.medical_deepinversion import DeepInversionClass
 
 if args.cosine_normalization:
         from models.Medical_predictor_model_3_layers_modified import ResNet,ResidualBlock
