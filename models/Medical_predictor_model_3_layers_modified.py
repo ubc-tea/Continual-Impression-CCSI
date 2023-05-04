@@ -55,8 +55,8 @@ class ResNet(nn.Module):
         self.layer2 = self._make_layer(block, 32, layers[1], 1)
         self.layer3 = self._make_layer(block, 64, layers[2], 1)
         self.avg_pool = nn.AvgPool2d(7)
-        self.fc = modified_linear.CosineLinear(64 * 4 * block.expansion, num_classes)
-        # self.fc = modified_linear.CosineLinear(16 * 4 * block.expansion, num_classes)
+        # self.fc = modified_linear.CosineLinear(64 * 4 * block.expansion, num_classes)
+        self.fc = modified_linear.CosineLinear(16 * 4 * block.expansion, num_classes)
 
         
         for m in self.modules():
