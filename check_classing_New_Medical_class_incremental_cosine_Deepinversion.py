@@ -456,15 +456,12 @@ for iteration_total in range(args.nb_runs):
             else:
                 print("resnet original model with layers 2 2 2 2 ")
                 tg_model = ResNet(ResidualBlock, [2, 2, 2, 2],input_dim=args.input_dim,num_classes=(iteration-start_iter)*args.nb_cl+args.nb_cl_fg).to(device)
-
-
             ref_model = None
             new_feature = args.nb_cl
             if args.continual_norm:
                 saved_bn,l = replace_bn(tg_model, 'model',args.gn_size)
                 tg_model.to(device)
             print("============================= Here is the model ============================")
-            print(tg_model)
         elif iteration == start_iter+1:
             ############################################################
             last_iter = iteration
