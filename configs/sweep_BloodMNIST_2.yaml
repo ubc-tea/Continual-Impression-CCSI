@@ -66,6 +66,8 @@ parameters:
         value: True
     sampler_type:
         value: paper2
+    add_sampler:
+        value: True
     mode:
         value: paper2_mean_adapt_margin_CN
     add_data:
@@ -77,7 +79,7 @@ parameters:
     random_label:
         value: true
     nb_generation:
-        value: 2
+        value: 16
     generate_more:
         value: true
     alpha_3:
