@@ -84,7 +84,7 @@ parameters:
         value: true
     alpha_3:
         value: 1
-    CL:
+    da_coef:
         value: 1
     ro:
         value: 0.9

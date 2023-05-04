@@ -73,10 +73,9 @@ parameters:
         value: 0.9
     random_label:
         value: true
-
     alpha_3:
         value: 1
-    CL:
+    da_coef:
         value: 1
     ro:
         value: 0.99

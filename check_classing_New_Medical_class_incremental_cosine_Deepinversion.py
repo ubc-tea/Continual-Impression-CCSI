@@ -257,8 +257,6 @@ parser.add_argument('--lw_mr', default=1, type=float, \
                     help='loss weight for margin ranking loss')
 
 ### domain adaptation contrastive loss
-parser.add_argument('--CL', default=0 , type=int,
-                    help='if none zero enable contrastive learning')
 parser.add_argument('--da_coef', default=1 , type=float,
                     help='domain adoption coeficient')
 parser.add_argument('--ro', default=0.9 , type=float,
@@ -439,7 +437,7 @@ for iteration_total in range(args.nb_runs):
         if iteration > start_iter:
 
             main_ckp_prefix = main_ckp_prefix + '_bsg_' + str(args.bs) + '_lrg_' + str(args.generation_lr) + '_rfg_' + str(args.r_feature) + '_tv_l2g_' + str(args.tv_l2) + '_l2g_' + str(args.l2) + '_beta2_' +str(args.beta_2)  + '_alpha3_'+str(args.alpha_3) + '_dist_' + str(args.dist) + '_mlm_'+ str(args.main_loss_multiplier)
-            if args.CL == 1:
+            if args.da_coef != 0:
                 main_ckp_prefix = main_ckp_prefix + '_ro_'+str(args.ro)+'_temprature_'+str(args.temprature)
 
             wandb.run.name = '{}_run_{}_iteration_{}_model.pth'.format(main_ckp_prefix, iteration_total, iteration)
@@ -591,19 +589,11 @@ for iteration_total in range(args.nb_runs):
         print("making original dataloader")
         trainset.data = X_train
         trainset.targets = map_Y_train
-        
-        # weights = trainset.compute_class_weights()
-        # print('weights------------------->',weights)
         ori_sample_weights = np.ones((len(map_Y_train)))
-        # for i,w in enumerate(weights):
-        #     indices_train = np.array([j==i for j in map_Y_train])
-        #     ori_sample_weights[indices_train] = w
-        # print('Uniqueeee samples:',np.unique(ori_sample_weights))
 
         if iteration == start_iter:
             X_valid_ori = X_valid
             Y_valid_ori = map_Y_valid
-
             rs_sample_weights = ori_sample_weights
             rs_num_samples = len(X_train)
         else:
@@ -654,8 +644,6 @@ for iteration_total in range(args.nb_runs):
             tg_model.fc.fc2.weight.data = novel_embedding.to(device)
 
         ############################################################
-
-
 
         
         if args.rs_ratio > 0:
@@ -734,11 +722,11 @@ for iteration_total in range(args.nb_runs):
             #############################
             weights = trainset.compute_class_weights()
 
-            tg_model = incremental_train_and_eval(ckp_name,None, None, args.epochs, \
+            tg_model = incremental_train_and_eval(ckp_name, args.epochs, \
                                                   tg_model, ref_model, tg_optimizer, tg_lr_scheduler, \
                                                   trainloader, testloader, evalloader, \
                                                   iteration, start_iter, cur_lamda, \
-                                                  args.dist, args.K, args.lw_mr, args.CL, args.ro, device=device, \
+                                                  args.dist, args.K, args.lw_mr, args.ro, device=device, \
                                                   da_coef=args.da_coef, alpha_3=args.alpha_3,temprature=args.temprature, \
                                                   weight_per_class = torch.tensor(weights).float().to(device) , continual_norm= args.continual_norm)
 
@@ -746,12 +734,7 @@ for iteration_total in range(args.nb_runs):
 
 
         ### Exemplars
-        if args.fix_budget:
-            print("fixing budget")
-            nb_protos_cl = int(np.ceil(args.nb_protos*100./args.nb_cl/(iteration+1)))
-        else:
-            nb_protos_cl = args.nb_protos
-
+        nb_protos_cl = args.nb_protos
         nn.Sequential(*list(tg_model.children())[:-1])
         tg_feature_model = nn.Sequential(*list(tg_model.children())[:-1])
         num_features = tg_model.fc.in_features
