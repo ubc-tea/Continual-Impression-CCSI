@@ -124,7 +124,7 @@ parser.add_argument('--nb_phases', default=2, type=int, \
 parser.add_argument('--nb_protos', default=20, type=int, \
                     help='Number of prototypes per class at the end')
 parser.add_argument('--nb_runs', default=1, type=int, \
-                    help='Number of runs (random ordering of classes at each run)')
+                    help='Number of configs (random ordering of classes at each run)')
 parser.add_argument('--start_generate_phase', default=0 , type=int,
                     help='start generate phase')
 
@@ -348,7 +348,7 @@ X_valid_total = np.array(testset.data)
 Y_valid_total = np.array(testset.targets)
 curupted_last_task = False
 
-# Launch the different runs
+# Launch the different configs
 for iteration_total in range(args.nb_runs):
     # Select the order for the class learning
     order_name = args.main_directory + "/seed_{}_rder_run_{}.pkl".format(args.random_seed, iteration_total)
