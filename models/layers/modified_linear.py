@@ -25,16 +25,8 @@ class CosineLinear(Module):
             self.sigma.data.fill_(1) #for initializaiton of sigma
 
     def forward(self, input):
-        #w_norm = self.weight.data.norm(dim=1, keepdim=True)
-        #w_norm = w_norm.expand_as(self.weight).add_(self.epsilon)
-        #x_norm = input.data.norm(dim=1, keepdim=True)
-        #x_norm = x_norm.expand_as(input).add_(self.epsilon)
-        #w = self.weight.div(w_norm)
-        #x = input.div(x_norm)
-        # print("11",input.shape)
         out = F.linear(F.normalize(input, p=2,dim=1), \
                 F.normalize(self.weight, p=2, dim=1))
-        # print("12",out.shape)
         if self.sigma is not None:
             out = self.sigma * out
         return out
@@ -76,11 +68,8 @@ class SplitLinear(Module):
             self.register_parameter('sigma', None)
 
     def forward(self, x):
-        # print('laast',x.shape)
         out1 = self.fc1(x)
-        # print('laast',out1.shape)
         out2 = self.fc2(x)
-        # print('laast',out2.shape)
         out = torch.cat((out1, out2), dim=1) #concatenate along the channel
         if self.sigma is not None:
             out = self.sigma * out

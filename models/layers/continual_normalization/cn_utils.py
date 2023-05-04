@@ -3,7 +3,6 @@ import torch
 
 
 def check_training(module,print_var=False):
-    
     for attr_str in dir(module):
         target_attr = getattr(module, attr_str)
         if type(target_attr) == CN4 or type(target_attr) == CN8 or type(target_attr) == CN16:
@@ -17,10 +16,7 @@ def check_training(module,print_var=False):
     return
 
 
-def load_continual_variables(module,name,device,group_running_mean_list,group_running_var_list,b_size_list):   
-    # print('what about you babe?',device)
-    # print(name,b_size_list)
-    # print(name,len(group_running_mean_list))
+def load_continual_variables(module,name,device,group_running_mean_list,group_running_var_list,b_size_list):
     for attr_str in dir(module):
         target_attr = getattr(module, attr_str)
         if type(target_attr) == CN4 or type(target_attr) == CN8 or type(target_attr) == CN16:
@@ -28,7 +24,6 @@ def load_continual_variables(module,name,device,group_running_mean_list,group_ru
             target_attr.load_group_vars(group_running_mean,group_running_var,b_size,device)
 
     for name, icm in module.named_children():
-        # print(name)
         group_running_mean,group_running_var,b_size = group_running_mean_list.pop(0),group_running_var_list.pop(0),b_size_list.pop(0)
         if type(icm) == CN4 or type(icm) == CN8 or type(icm) == CN16:
             # print('detected')
@@ -38,7 +33,6 @@ def load_continual_variables(module,name,device,group_running_mean_list,group_ru
     return 
 
 def replace_bn(module, name, gn_size,layer_number = 0):
-    # print("replacing")
     pre_bn = []
     for attr_str in dir(module):
         target_attr = getattr(module, attr_str)
@@ -55,7 +49,6 @@ def replace_bn(module, name, gn_size,layer_number = 0):
     for name, icm in module.named_children():
         if type(icm) == torch.nn.BatchNorm2d:
             pre_bn.append(icm)
-            # print("hereeee" ,icm.num_features)
             if gn_size == 4:
                 new_bn = CN4(icm,layer_number)
             elif gn_size == 8:
@@ -70,7 +63,6 @@ def replace_bn(module, name, gn_size,layer_number = 0):
 
 
 def get_continual_variables(module,name):
-    # print("replacing")
     group_running_mean_list = []
     group_running_var_list = [] 
     b_size_list = []
@@ -82,8 +74,8 @@ def get_continual_variables(module,name):
             group_running_mean_list.append(group_running_mean)
             group_running_var_list.append(group_running_var) 
             b_size_list.append(b_size)
+
     for name, icm in module.named_children():
-        # print(name,b_size_list)
         if type(icm) == CN4 or type(icm) == CN8 or type(icm) == CN16:
             group_running_mean,group_running_var,b_size = icm.get_group_vars()
             group_running_mean_list.append(group_running_mean)
@@ -93,5 +85,4 @@ def get_continual_variables(module,name):
         group_running_mean_list.append(group_running_mean)
         group_running_var_list.append(group_running_var) 
         b_size_list.append(b_size)
-    
     return group_running_mean_list, group_running_var_list, b_size_list

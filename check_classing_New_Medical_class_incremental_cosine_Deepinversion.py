@@ -79,6 +79,8 @@ def validate_one(input, target, model):
 
 ######### Modifiable Settings ##########
 parser = argparse.ArgumentParser()
+
+
 ##### Log and Checkpoint variables
 parser.add_argument('--project_name', default='continual_learning_new' , type=str,
                     help='project name in wandb')
@@ -90,6 +92,19 @@ parser.add_argument('--main_directory', default='./medical_checkpoint/', type=st
                     help='Checkpoint directory')
 parser.add_argument('--ckp_prefix', default='', type=str, \
                     help='Checkpoint prefix')
+parser.add_argument('--saved_model_address', default=" " , type=str,
+                    help='address of saved model')
+
+
+##### Run type Variables
+parser.add_argument('--random_seed', default=2022, type=int, \
+                    help='random seed')
+parser.add_argument('--mode', default='CCSI' , type=str,
+                    help='use which sampler strategy')
+parser.add_argument('--cuda_number', default=0 , type=int,
+                    help='which cuda use to train')
+parser.add_argument('--validate', default=False , type=bool,
+                    help='run the validate part of network')
 parser.add_argument('--resume', default=False , type=bool, \
                     help='resume from checkpoint')
 parser.add_argument('--store_best_images', default=False , type=bool,
@@ -100,34 +115,6 @@ parser.add_argument('--mean_images_dir', type=str, default='./saved_Sample',
                     help='place to save samples')
 parser.add_argument('--load_dricet_mode', default=False , type=bool,
                     help='load model weights directly')
-parser.add_argument('--saved_model_address', default=" " , type=str,
-                    help='address of saved model')
-
-
-##### Run type Variables
-parser.add_argument('--mode', default='CCSI' , type=str,
-                    help='use which sampler strategy')
-parser.add_argument('--use_mean_initialization', default=False , type=bool,
-                    help='use mean of classes to initialize vectors')
-parser.add_argument('--cuda_number', default=0 , type=int,
-                    help='which cuda use to train')
-parser.add_argument('--generate_more', default=False , type=bool,
-                    help='generate more batches of data')
-parser.add_argument('--CL', default=0 , type=int,
-                    help='if none zero enable contrastive learning')
-parser.add_argument('--enable_drop_out', default=False , type=bool,
-                    help='if model got activated dropout in it')
-parser.add_argument('--continual_norm', default=False , type=bool,
-                    help='if model has continual norm instead of batch norm')
-parser.add_argument('--gn_size', default=4 , type=int,
-                    help='size of group norm')
-parser.add_argument('--look_back', default=False , type=bool,
-                    help='Enable look back')
-parser.add_argument('--not_synthesis', default=False , type=bool,
-                    help='Enable not synthesis')
-parser.add_argument('--validate', default=False , type=bool,
-                    help='run the validate part of network')
-
 
 ##### Data Spilit variables and data features
 parser.add_argument('--num_classes', default=14, type=int)
@@ -154,19 +141,24 @@ parser.add_argument('--data', default='None' , type=str,
 parser.add_argument('--image_size', default=224 , type=int,
                     help='Image size')
 
+
 ##### Model Variables
 parser.add_argument('--cosine_normalization', default=False , type=bool,
                     help='change last layer of networks')
 parser.add_argument('--small_model', default=False , type=bool,
                     help='use model with 3 layers')
-parser.add_argument('--big_model', default=False , type=bool,
-                    help='use model with resnet 50 layers')
 parser.add_argument('--resnet_101', default=False , type=bool,
                     help='Resnet 101')
 parser.add_argument('--resnet_18', default=False , type=bool,
                     help='Resnet 18')
 parser.add_argument('--vgg11', default=False , type=bool,
                     help='Resnet 101')
+parser.add_argument('--enable_drop_out', default=False , type=bool,
+                    help='if model got activated dropout in it')
+parser.add_argument('--continual_norm', default=False , type=bool,
+                    help='if model has continual norm instead of batch norm')
+parser.add_argument('--gn_size', default=4 , type=int,
+                    help='size of group norm')
 
 
 ##### Synthesis variable
@@ -202,6 +194,8 @@ parser.add_argument('--l2', type=float, default=0.00001,
                     help='l2 loss on the image')
 parser.add_argument('--main_loss_multiplier', type=float, default=1.0,
                     help='coefficient for the main loss in optimization')
+parser.add_argument('--use_mean_initialization', default=False , type=bool,
+                    help='use mean of classes to initialize vectors')
 
 
 ##### Sampler Variables
@@ -211,6 +205,12 @@ parser.add_argument('--add_data',  default=False , type=bool,
                     help='enable deep to add generated data')
 parser.add_argument('--nb_generation', default=0 , type=int,
                     help='number of batch to train')
+parser.add_argument('--look_back', default=False , type=bool,
+                    help='Enable look back')
+parser.add_argument('--not_synthesis', default=False , type=bool,
+                    help='Enable not synthesis')
+parser.add_argument('--generate_more', default=False , type=bool,
+                    help='generate more batches of data')
 
 
 
@@ -223,6 +223,28 @@ parser.add_argument('--lr', type=float, default=0.2,
                     help='learning rate for optimization')
 parser.add_argument('--rs_ratio', default=0, type=float, \
                     help='The ratio for resample')
+parser.add_argument('--beta_2', default=0.9 , type=float,
+                    help='beta 2 for adam optimizer in generating')
+
+### knowledge transfer between two tasks
+parser.add_argument('--imprint_weights', default=False , type=bool, \
+                    help='Imprint the weights for novel classes')
+parser.add_argument('--less_forget', default=False , type=bool, \
+                    help='Less forgetful')
+parser.add_argument('--lamda', default=5, type=float, \
+                    help='Lamda for LF')
+parser.add_argument('--adapt_lamda', default=False , type=bool, \
+                    help='Adaptively change lamda')
+
+### Distilatillation
+parser.add_argument('--T', default=2, type=float, \
+                    help='Temporature for distialltion')
+parser.add_argument('--beta', default=0.25, type=float, \
+                    help='Beta for distialltion')
+
+### Margin ranking
+parser.add_argument('--alpha_3', default=1 , type=float,
+                    help='Margin ranking loss coeficient')
 parser.add_argument('--mr_loss', default=False , type=bool, \
                     help='Margin ranking loss v1')
 parser.add_argument('--amr_loss', default=False , type=bool, \
@@ -233,26 +255,10 @@ parser.add_argument('--K', default=1, type=int, \
                     help='K for MarginRankingLoss')
 parser.add_argument('--lw_mr', default=1, type=float, \
                     help='loss weight for margin ranking loss')
-parser.add_argument('--beta_2', default=0.9 , type=float,
-                    help='beta 2 for adam optimizer in generating')
-### knowledge transfer between two tasks
-parser.add_argument('--imprint_weights', default=False , type=bool, \
-                    help='Imprint the weights for novel classes')
-parser.add_argument('--less_forget', default=False , type=bool, \
-                    help='Less forgetful')
-parser.add_argument('--lamda', default=5, type=float, \
-                    help='Lamda for LF')
-parser.add_argument('--adapt_lamda', default=False , type=bool, \
-                    help='Adaptively change lamda')
-### Distilatillation
-parser.add_argument('--T', default=2, type=float, \
-                    help='Temporature for distialltion')
-parser.add_argument('--beta', default=0.25, type=float, \
-                    help='Beta for distialltion')
-### Margin ranking
-parser.add_argument('--alpha_3', default=1 , type=float,
-                    help='Margin ranking loss coeficient')
+
 ### domain adaptation contrastive loss
+parser.add_argument('--CL', default=0 , type=int,
+                    help='if none zero enable contrastive learning')
 parser.add_argument('--da_coef', default=1 , type=float,
                     help='domain adoption coeficient')
 parser.add_argument('--ro', default=0.9 , type=float,
@@ -261,16 +267,13 @@ parser.add_argument('--temprature', default=5 , type=float,
                     help='temprature for contrastive loss')
 
 
-
-
 ##### ?????
 parser.add_argument('--mimic_score', default=False , type=bool, \
                     help='To mimic scores for cosine embedding')
 parser.add_argument('--lw_ms', default=1, type=float, \
                     help='loss weight for mimicking score')
 
-parser.add_argument('--random_seed', default=2022, type=int, \
-                    help='random seed')
+
 
 #####################################################################################################
 
