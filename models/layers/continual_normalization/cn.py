@@ -67,7 +67,6 @@ class _CN(_BatchNorm):
             self.group_running_mean =  self.total_mean
             self.group_running_var =  self.total_var
             self.first_run = False
-            print("input shape", self.layer_number ,input.shape)
             self.b_size = input.shape[0]
 
 
