@@ -105,7 +105,7 @@ parser.add_argument('--saved_model_address', default=" " , type=str,
 
 
 ##### Run type Variables
-parser.add_argument('--mode', default='paper1' , type=str,
+parser.add_argument('--mode', default='CCSI' , type=str,
                     help='use which sampler strategy')
 parser.add_argument('--use_mean_initialization', default=False , type=bool,
                     help='use mean of classes to initialize vectors')
@@ -209,8 +209,6 @@ parser.add_argument('--add_sampler',  default=False , type=bool,
                     help='enable deep inversion part')
 parser.add_argument('--add_data',  default=False , type=bool,
                     help='enable deep to add generated data')
-parser.add_argument('--sampler_type', default='paper1' , type=str,
-                    help='use which sampler strategy')
 parser.add_argument('--nb_generation', default=0 , type=int,
                     help='number of batch to train')
 
@@ -391,8 +389,6 @@ for iteration_total in range(args.nb_runs):
     Y_protoset_cumuls = []
     Y_train_cumuls    = []
 
-    if args.sampler_type == 'paper1':
-        alpha_dr_herding  = np.zeros((int(args.num_classes/args.nb_cl),dictionary_size,args.nb_cl_fg),np.float32)
 
     prototypes = [[] for i in range(args.num_classes)]
     for orde in range(args.num_classes):
@@ -441,15 +437,6 @@ for iteration_total in range(args.nb_runs):
         if iteration > start_iter and re.search("^paper2*", args.mode) != None and re.search("^paper2*", args.mode).group() == 'paper2':
             
             main_ckp_prefix = main_ckp_prefix + '_bsg_' + str(args.bs) + '_lrg_' + str(args.generation_lr) + '_rfg_' + str(args.r_feature) + '_tv_l2g_' + str(args.tv_l2) + '_l2g_' + str(args.l2) + '_beta2_' +str(args.beta_2)  + '_alpha3_'+str(args.alpha_3) + '_dist_' + str(args.dist) + '_mlm_'+ str(args.main_loss_multiplier)
-            if args.CL == 1:
-                main_ckp_prefix = main_ckp_prefix + '_ro_'+str(args.ro)+'_temprature_'+str(args.temprature)
-
-            wandb.run.name = '{}_run_{}_iteration_{}_model.pth'.format(main_ckp_prefix, iteration_total, iteration)
-            wandb.run.save()
-
-        elif iteration > start_iter and re.search("^paper1*", args.mode) != None and re.search("^paper1*", args.mode).group() == 'paper1':
-            
-            main_ckp_prefix = main_ckp_prefix +  '_beta2_' +str(args.beta_2)  + '_alpha3_'+str(args.alpha_3) + '_dist_' + str(args.dist)
             if args.CL == 1:
                 main_ckp_prefix = main_ckp_prefix + '_ro_'+str(args.ro)+'_temprature_'+str(args.temprature)
 
@@ -627,16 +614,9 @@ for iteration_total in range(args.nb_runs):
                     rs_num_samples = int(len(X_train) / (1 - args.rs_ratio))
                     print("X_train:{}, X_protoset:{}, rs_num_samples:{}".format(len(X_train), len(X_protoset), rs_num_samples))
 
-                if args.sampler_type == 'paper1':
-                    print("paper 1 added")
-                    X_train    = np.concatenate((X_train,X_protoset))
-                    map_Y_train    = np.concatenate((map_Y_train,Y_protoset))
-                    trainset.data = X_train
-                    trainset.targets = map_Y_train
-                elif re.search("^paper2*",args.mode ).group() == 'paper2':
-                    trainset.proto_sets_x = X_protoset
-                    trainset.proto_sets_y = Y_protoset
-                    trainset.comput_mean_and_std()
+                trainset.proto_sets_x = X_protoset
+                trainset.proto_sets_y = Y_protoset
+                trainset.comput_mean_and_std()
 
         
 
@@ -772,49 +752,10 @@ for iteration_total in range(args.nb_runs):
         tg_feature_model = nn.Sequential(*list(tg_model.children())[:-1])
         num_features = tg_model.fc.in_features
 
-        # Herding
-        if args.sampler_type == 'paper1' and args.add_sampler:
-            print('Updating exemplar set...')
-            for iter_dico in range(0, lt):
-                # Possible exemplars in the feature space and projected on the L2 sphere
-                evalset.data = prototypes[iter_dico]
-                evalset.targets = np.zeros(len(evalset.data)) #zero labels
-                evalloader = torch.utils.data.DataLoader(evalset, batch_size=eval_batch_size,
-                                                         shuffle=False, num_workers=2)
-                num_samples = len(evalset.data)
-                mapped_prototypes = compute_features(tg_feature_model, evalloader, num_samples, num_features,device)
-                D = mapped_prototypes.T
-                D = D/np.linalg.norm(D,axis=0)
-
-                # Herding procedure : ranking of the potential exemplars
-                mu  = np.mean(D,axis=1)
-                # print('mu_shape', mu.shape,D.shape)
-                if iter_dico < args.nb_cl_fg:
-                    index1 = 0
-                    index2 = iter_dico%args.nb_cl_fg
-                else:
-                    index1 = int((iter_dico-extra_fg)/args.nb_cl)
-                    index2 = (iter_dico-extra_fg) % args.nb_cl
-                print(index1,index2)
-                alpha_dr_herding[index1,:,index2] = alpha_dr_herding[index1,:,index2]*0
-                w_t = mu
-                iter_herding     = 0
-                iter_herding_eff = 0
-                while not(np.sum(alpha_dr_herding[index1,:,index2]!=0)==min(nb_protos_cl,500)) and iter_herding_eff<1000:
-                    tmp_t   = np.dot(w_t,D)
-                    ind_max = np.argmax(tmp_t)
-                    # print(tmp_t.shape,ind_max)
-                    iter_herding_eff += 1
-                    if alpha_dr_herding[index1,ind_max,index2] == 0:
-                        alpha_dr_herding[index1,ind_max,index2] = 1+iter_herding
-                        iter_herding += 1
-                    w_t = w_t+mu-D[:,ind_max]
-        ########################################################################################################################################################################################################################################################################################################
-
         # Prepare the protoset
         X_protoset_cumuls = []
         Y_protoset_cumuls = []
-        if args.sampler_type == 'paper2' and args.add_data:
+        if args.add_data:
             print("generation")
             
             if iteration == start_iter:
@@ -981,64 +922,6 @@ for iteration_total in range(args.nb_runs):
 
 
 
-
-        # ########################################################################################################################################################################################################################################################################################################
-
-        # Class means for iCaRL and NCM + Storing the selected exemplars in the protoset
-        if args.sampler_type == 'paper1' and args.add_sampler:
-            print('Computing mean-of_exemplars and theoretical mean...')
-            class_means = np.zeros((num_features, args.num_classes, 2))
-            for iteration2 in range(iteration+1):
-                if iteration2 == start_iter:
-                    r = -1*extra_fg
-                else:
-                    r = 0
-                for iter_dico in range(r,args.nb_cl):
-                    print('current_cl:',iteration2*args.nb_cl+extra_fg+r,(iteration2+1)*args.nb_cl+extra_fg)
-                    current_cl = order[range(iteration2*args.nb_cl+extra_fg+r,(iteration2+1)*args.nb_cl+extra_fg)]
-
-                    # Collect data in the feature space for each class
-                    evalset.data = prototypes[iteration2*args.nb_cl+extra_fg+iter_dico]
-                    evalset.targets = np.zeros(len(evalset.data)) #zero labels
-                    evalloader = torch.utils.data.DataLoader(evalset, batch_size=eval_batch_size,
-                                                             shuffle=False, num_workers=2)
-                    num_samples = len(evalset.data)
-                    mapped_prototypes = compute_features(tg_feature_model, evalloader, num_samples, num_features,device)
-                    D = mapped_prototypes.T
-                    D = D/np.linalg.norm(D,axis=0)
-                    # Flipped version also
-                    evalset.data = prototypes[iteration2*args.nb_cl+extra_fg+iter_dico]
-                    evalset.flipped_version = True
-                    evalloader = torch.utils.data.DataLoader(evalset, batch_size=eval_batch_size,
-                                                             shuffle=False, num_workers=2)
-                    mapped_prototypes2 = compute_features(tg_feature_model, evalloader, num_samples, num_features,device)
-                    D2 = mapped_prototypes2.T
-                    D2 = D2/np.linalg.norm(D2,axis=0)
-                    evalset.flipped_version = False
-
-                    # iCaRL
-                    alph = alpha_dr_herding[iteration2,:,iter_dico-r]
-                    alph = (alph>0)*(alph<nb_protos_cl+1)*1.
-                    # print(alph,np.where(alph==1),len(prototypes[iteration2*args.nb_cl+iter_dico]))
-                    # print(np.where(alph==1)[0])
-                    X_protoset_cumuls.append(prototypes[iteration2*args.nb_cl+extra_fg+iter_dico][np.where(alph==1)[0]])
-                    Y_protoset_cumuls.append(order[iteration2*args.nb_cl+extra_fg+iter_dico]*np.ones(len(np.where(alph==1)[0])))
-                    alph = alph/np.sum(alph)
-                    board = D.shape[1]
-                    class_means[:,current_cl[iter_dico],0] = (np.dot(D,alph[0:board])+np.dot(D2,alph[0:board]))/2
-                    class_means[:,current_cl[iter_dico],0] /= np.linalg.norm(class_means[:,current_cl[iter_dico],0])
-
-                    # Normal NCM
-                    alph = np.ones(dictionary_size)/dictionary_size
-                    class_means[:,current_cl[iter_dico],1] = (np.dot(D,alph[0:board])+np.dot(D2,alph[0:board]))/2
-                    class_means[:,current_cl[iter_dico],1] /= np.linalg.norm(class_means[:,current_cl[iter_dico],1])
-                    print("len X_protoset_cumuls",len(X_protoset_cumuls))
-
-            torch.save(class_means, \
-                       args.main_directory + '/{}_run_{}_iteration_{}_class_means.pth'.format(main_ckp_prefix,iteration_total, iteration))
-
-            current_means = class_means[:, order[range(0,(iteration+1)*args.nb_cl+extra_fg)]]
-        ##############################################################
         # Calculate validation error of model on the first nb_cl classes:
         if args.validate:
             # if (args.load_dricet_mode and iteration == args.start_generate_phase) or args.load_dricet_mode == False:
