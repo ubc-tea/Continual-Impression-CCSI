@@ -309,6 +309,9 @@ custom_momentum        = 0            # Momentum
 if not os.path.exists(args.main_directory):
     os.makedirs(args.main_directory)
 
+if not os.path.exists(args.main_directory+'/'+args.mode):
+    os.makedirs(args.main_directory+'/'+args.mode)
+
 main_ckp_prefix       = '{}_nb_cl_fg_{}_nb_cl_{}_lr_{}_bs_{}'.format(args.ckp_prefix,
                                                                         args.nb_cl_fg,
                                                                         args.nb_cl,

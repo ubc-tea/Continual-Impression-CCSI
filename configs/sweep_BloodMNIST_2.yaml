@@ -66,8 +66,6 @@ parameters:
         value: True
     sampler_type:
         value: paper2
-    add_sampler:
-        value: True
     mode:
         value: paper2_mean_adapt_margin_CN
     add_data:
