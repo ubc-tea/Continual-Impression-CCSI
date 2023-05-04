@@ -1,11 +1,11 @@
-program: New_Medical_class_incremental_cosine_Deepinversion.py
+program: check_classing_New_Medical_class_incremental_cosine_Deepinversion.py
 method: grid
 metric:
     goal: maximize
     name: Best Acc
 parameters:
     lr:
-        values: [0.001,0.01,0.1]
+        value: 0.01
     batch_size_1: 
         value: 40
     input_dim:
@@ -89,7 +89,7 @@ parameters:
     continual_norm:
         value: True
     project_name:
-        value: Sockeye_runs_medmnist
+        value: github
     
     image_size:
         value: 28
@@ -102,4 +102,4 @@ early_terminate:
     s: 2
     eta: 3
     max_iter: 5    
-project: Sockeye_runs_medmnist
+project: github
