@@ -111,6 +111,10 @@ parameters:
         value: True
     saved_model_address:
         value: ../saved_models/class_incremental_MR_LFAD_cosine_small_nb_cl_fg_2_nb_cl_2_lr_0.01_bs_40_run_0_iteration_0_model.pth
+    wandb_key:
+        value: your_key
+    wandb_acc:
+        value: your_acc
 early_terminate:
     type: hyperband
     s: 20

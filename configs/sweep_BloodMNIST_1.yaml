@@ -94,6 +94,10 @@ parameters:
         value: True
     data:
         value: BloodMnist
+    wandb_key:
+        value: your_key
+    wandb_acc:
+        value: your_acc
 early_terminate:
     type: hyperband
     s: 2

@@ -82,6 +82,10 @@ parser = argparse.ArgumentParser()
 ##### Log and Checkpoint variables
 parser.add_argument('--project_name', default='continual_learning_new' , type=str,
                     help='project name in wandb')
+parser.add_argument('--wandb_acc', default='your_acc' , type=str,
+                    help='account name in wandb')
+parser.add_argument('--wandb_key', default='your_key' , type=str,
+                    help='account key in wandb')
 parser.add_argument('--main_directory', default='./medical_checkpoint/', type=str, \
                     help='Checkpoint directory')
 parser.add_argument('--ckp_prefix', default='', type=str, \
@@ -291,9 +295,9 @@ else:
         from models.Medical_predictor_model_3_layers import ResNet,ResidualBlock
 
 #TODO delete
-os.environ["WANDB_API_KEY"] = 'f87c7a64e4a4c89c4f1afc42620ac211ceb0f926'
+os.environ["WANDB_API_KEY"] = args.wandb_key
 # os.environ["WANDB_MODE"] = "offline"
-wandb.init(project= args.project_name , entity="sanaayr",config=args)
+wandb.init(project= args.project_name , entity=args.wandb_acc,config=args)
 
 ########################################
 train_batch_size       = args.batch_size_1            # Batch size for train
