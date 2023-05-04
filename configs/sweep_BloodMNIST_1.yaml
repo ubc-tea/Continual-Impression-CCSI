@@ -11,7 +11,7 @@ parameters:
     input_dim:
         value: 3
     main_directory:
-        value: /home/s.ayromlou/CVPR19_Incremental_Learning/cifar100-class-incremental/sweep_checkpoint_medmnist
+        value: ../
     ckp_prefix:
         value: class_incremental_MR_LFAD_cosine_small
     random_seed:
