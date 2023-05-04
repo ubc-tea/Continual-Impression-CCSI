@@ -908,7 +908,7 @@ for iteration_total in range(args.nb_runs):
                                                              device = device,
                                                              target_classes_min = 0,
                                                              target_classes_max = max(map_Y_train),
-                                                             mean_image_dir =args.save_samples_dir,
+                                                             mean_image_dir = 'mean/'+args.data+'/',
                                                              order_mine = sub_order,
                                                             medmnist= args.data)
                 else:
@@ -931,7 +931,7 @@ for iteration_total in range(args.nb_runs):
                                                              device = device,
                                                              target_classes_min = 0,
                                                              target_classes_max = max(map_Y_train),
-                                                             mean_image_dir =args.save_samples_dir,
+                                                             mean_image_dir =  'mean/'+args.data+'/',
                                                              order_mine = sub_order,
                                                             cm = cm,
                                                             alpha = alpha,
