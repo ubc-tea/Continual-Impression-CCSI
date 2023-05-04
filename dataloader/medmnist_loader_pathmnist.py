@@ -48,7 +48,7 @@ class Modified_medmnist(PathMNIST):
         self.std_generate = [1]
         self.image_size = image_size
         self.transform = _get_transform(image_size = self.image_size)
-        self.transform_generate = _get_transform_fake(self.mean_generate, self.std_generate, 'train',to_pil_image = False)
+        self.transform_generate = _get_transform_fake(self.mean_generate, self.std_generate,to_pil_image = False)
         self.o = 0
         self.return_type = False
 
