@@ -1,4 +1,4 @@
-program: New_Medical_class_incremental_cosine_Deepinversion.py
+program: check_classing_New_Medical_class_incremental_cosine_Deepinversion.py
 method: grid
 metric:
     goal: maximize
@@ -11,7 +11,7 @@ parameters:
     input_dim:
         value: 3
     main_directory:
-        value: /home/s.ayromlou/CVPR19_Incremental_Learning/cifar100-class-incremental/sweep_checkpoint_medmnist
+        value: ../saved_models
     ckp_prefix:
         value: class_incremental_MR_LFAD_cosine_small
     random_seed:
@@ -29,7 +29,7 @@ parameters:
     rs_ratio: 
         value: 0.66
     dist:
-        values: [0.3,0.5,0.7,0.9] 
+        value: 0.3
     K: 
         value: 1
     lw_mr: 
@@ -39,17 +39,17 @@ parameters:
     setting_id: 
         value: 1 
     generation_lr: 
-        values: [0.05,0.25,0.005]
+        value: 0.05
     adi_scale: 
         value: 0.0 
     tv_l2: 
-        values: [0.001,0.01,0.1] 
+        value: 0.01
     r_feature: 
-        values: [1, 0.2,0.02]
+        value: 1
     l2: 
-        values: [0.1,0.001,0.01]
+        value: 0.1
     main_loss_multiplier:
-        values: [1,10]
+        value: 10
     cosine_normalization:
         value: True
     imprint_weights:
@@ -73,25 +73,25 @@ parameters:
     add_data:
         value: True
     save_samples_dir:
-        value: /home/s.ayromlou/CVPR19_Incremental_Learning/cifar100-class-incremental/saved_Sample_bloodmnist
+        value: /mean/BloodMnist
     use_mean_initialization:
         value: true
     beta_2:
-        values: [0.9,0.09,0.009]
+        value: 0.9
     random_label:
         value: true
     nb_generation:
-        value: 16
+        value: 2
     generate_more:
         value: true
     alpha_3:
-        values: [1,10,100]
+        value: 1
     CL:
         value: 1
     ro:
-        values: [0.9,0.99,0.999]
+        value: 0.9
     temprature:
-        values: [1,5,9] 
+        value: 1
     cuda_number:
         value: 0
 
@@ -100,11 +100,11 @@ parameters:
     small_model:
         value: True
     project_name:
-        value: Sockeye_runs_medmnist
-    medmnist:
+        value: githun
+    data:
         value: BloodMnist
     image_size:
-        value: 32
+        value: 28
     resolution:
         value: 32
     start_generate_phase:
@@ -112,10 +112,10 @@ parameters:
     load_dricet_mode:
         value: True
     saved_model_address:
-        value: /home/s.ayromlou/CVPR19_Incremental_Learning/cifar100-class-incremental/sweep_checkpoint_medmnist/class_incremental_MR_LFAD_cosine_small_nb_cl_fg_2_nb_cl_2_lr_0.1_bs_40_run_0_iteration_0_model.pth
+        value: ../saved_models/class_incremental_MR_LFAD_cosine_small_nb_cl_fg_2_nb_cl_2_lr_0.01_bs_40_run_0_iteration_0_model.pth
 early_terminate:
     type: hyperband
     s: 20
     eta: 30
     max_iter: 50    
-project: Sockeye_runs_medmnist
+project: github
