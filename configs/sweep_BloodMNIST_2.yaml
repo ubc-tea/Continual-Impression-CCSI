@@ -72,8 +72,6 @@ parameters:
         value: paper2_mean_adapt_margin_CN
     add_data:
         value: True
-    save_samples_dir:
-        value: /mean/BloodMnist
     use_mean_initialization:
         value: true
     beta_2:
