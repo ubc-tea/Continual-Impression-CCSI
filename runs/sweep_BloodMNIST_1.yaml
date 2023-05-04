@@ -67,8 +67,6 @@ parameters:
         value: True
     mode:
         value: paper2
-    save_samples_dir:
-        value: /home/s.ayromlou/CVPR19_Incremental_Learning/cifar100-class-incremental/saved_Sample_3_2
     use_mean_initialization:
         value: true
     beta_2:
@@ -95,7 +93,7 @@ parameters:
         value: 28
     small_model:
         value: True
-    medmnist:
+    data:
         value: BloodMnist
 early_terminate:
     type: hyperband
