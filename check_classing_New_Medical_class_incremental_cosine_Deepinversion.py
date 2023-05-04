@@ -434,14 +434,13 @@ for iteration_total in range(args.nb_runs):
         wandb.run.name = '{}_run_{}_iteration_{}_model.pth'.format(main_ckp_prefix, iteration_total, iteration)
         wandb.run.save()    
         
-        if iteration > start_iter and re.search("^paper2*", args.mode) != None and re.search("^paper2*", args.mode).group() == 'paper2':
-            
-            main_ckp_prefix = main_ckp_prefix + '_bsg_' + str(args.bs) + '_lrg_' + str(args.generation_lr) + '_rfg_' + str(args.r_feature) + '_tv_l2g_' + str(args.tv_l2) + '_l2g_' + str(args.l2) + '_beta2_' +str(args.beta_2)  + '_alpha3_'+str(args.alpha_3) + '_dist_' + str(args.dist) + '_mlm_'+ str(args.main_loss_multiplier)
-            if args.CL == 1:
-                main_ckp_prefix = main_ckp_prefix + '_ro_'+str(args.ro)+'_temprature_'+str(args.temprature)
 
-            wandb.run.name = '{}_run_{}_iteration_{}_model.pth'.format(main_ckp_prefix, iteration_total, iteration)
-            wandb.run.save()
+        main_ckp_prefix = main_ckp_prefix + '_bsg_' + str(args.bs) + '_lrg_' + str(args.generation_lr) + '_rfg_' + str(args.r_feature) + '_tv_l2g_' + str(args.tv_l2) + '_l2g_' + str(args.l2) + '_beta2_' +str(args.beta_2)  + '_alpha3_'+str(args.alpha_3) + '_dist_' + str(args.dist) + '_mlm_'+ str(args.main_loss_multiplier)
+        if args.CL == 1:
+            main_ckp_prefix = main_ckp_prefix + '_ro_'+str(args.ro)+'_temprature_'+str(args.temprature)
+
+        wandb.run.name = '{}_run_{}_iteration_{}_model.pth'.format(main_ckp_prefix, iteration_total, iteration)
+        wandb.run.save()
 
 
         #init model
