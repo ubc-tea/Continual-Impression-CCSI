@@ -260,9 +260,6 @@ parser.add_argument('--ro', default=0.9 , type=float,
 parser.add_argument('--temprature', default=5 , type=float,
                     help='temprature for contrastive loss')
 
-##### Paper 1 Variables
-parser.add_argument('--fix_budget', default=False , type=bool, \
-                    help='fix budget')
 
 
 
