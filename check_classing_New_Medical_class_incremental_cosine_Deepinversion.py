@@ -646,14 +646,14 @@ for iteration_total in range(args.nb_runs):
             novel_embedding = torch.zeros((new_feature, num_features))
 
             for cls_idx in range(st, lt):
-                cls_indices = np.array([i == cls_idx  for i in map_Y_valid])
-                cls_indices_1 = cls_indices[np.where(cls_indices<len(X_valid))]
+                cls_indices = np.array([i == cls_idx  for i in map_Y_train])
+                cls_indices_1 = cls_indices[np.where(cls_indices<len(X_train))]
                 assert(len(np.where(cls_indices==1)[0])<=dictionary_size)
-                trainset.data = X_valid[cls_indices[0:len(X_valid)]]
-                trainset.targets = np.zeros(trainset.data.shape[0]) #zero labels
-                evalloader = torch.utils.data.DataLoader(trainset, batch_size=eval_batch_size,
+                evalset.data = X_train[cls_indices[0:len(X_train)]]
+                evalset.targets = np.zeros(evalset.data.shape[0]) #zero labels
+                evalloader = torch.utils.data.DataLoader(evalset, batch_size=eval_batch_size,
                                                          shuffle=False, num_workers=2)
-                num_samples = trainset.data.shape[0]
+                num_samples = evalset.data.shape[0]
                 cls_features = compute_features(tg_feature_model, evalloader, num_samples, num_features,device=device)
 
                 norm_features = F.normalize(torch.from_numpy(cls_features), p=2, dim=1)
