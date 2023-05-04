@@ -956,10 +956,10 @@ for iteration_total in range(args.nb_runs):
 
                     X_protoset_cumuls.append(generated)
                     Y_protoset_cumuls.append(targets)
-                    # with open(generated_batch_add,'wb') as f:
-                    #     pickle.dump(X_protoset_cumuls, f)
-                    # with open(generated_target_add,'wb') as f:
-                    #     pickle.dump(Y_protoset_cumuls, f)
+                    with open(generated_batch_add,'wb') as f:
+                        pickle.dump(X_protoset_cumuls, f)
+                    with open(generated_target_add,'wb') as f:
+                        pickle.dump(Y_protoset_cumuls, f)
                 for hook in DeepInversionEngine.loss_r_feature_layers:
                     hook.close()
             else:
