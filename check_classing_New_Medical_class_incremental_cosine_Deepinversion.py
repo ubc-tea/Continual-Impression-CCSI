@@ -956,10 +956,7 @@ for iteration_total in range(args.nb_runs):
                 ##############################################################
                 # Calculate confusion matrix
                 print('Computing confusion matrix...')
-                if args.continual_norm or args.look_back:
-                    cm = compute_confusion_matrix(tg_model,evalloader,device=device)
-                else:
-                    cm = compute_confusion_matrix(tg_model, tg_feature_model, None, evalloader,device=device)
+                cm = compute_confusion_matrix(tg_model, evalloader,device=device)
                 print(cm)
                 # cm_name = './sweep_checkpoint/{}_run_{}_iteration_{}_confusion_matrix.pth'.format(main_ckp_prefix,iteration_total, iteration)
                 # with open(cm_name, 'wb') as f:
