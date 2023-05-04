@@ -11,7 +11,7 @@ parameters:
     input_dim:
         value: 3
     main_directory:
-        value: ../
+        value: ../saved_models
     ckp_prefix:
         value: class_incremental_MR_LFAD_cosine_small
     random_seed:
