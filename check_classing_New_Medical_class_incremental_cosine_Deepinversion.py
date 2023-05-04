@@ -329,9 +329,9 @@ else:
 print("cuda:"+str(args.cuda_number))
 device = torch.device("cuda:"+str(args.cuda_number) if torch.cuda.is_available() else "cpu")
 if args.data != 'None':
-    trainset = get_medmnist_dataset(mode='train', used_labels = None,order = sub_order,image_size = args.image_size)
-    evalset = get_medmnist_dataset(mode='test', used_labels = None,order = sub_order,image_size = args.image_size)
-    testset = get_medmnist_dataset(mode='test', used_labels = None,order = sub_order,image_size = args.image_size)
+    trainset = get_medmnist_dataset(mode='train', image_size = args.image_size)
+    evalset = get_medmnist_dataset(mode='test', image_size = args.image_size)
+    testset = get_medmnist_dataset(mode='test', image_size = args.image_size)
     
 else:
     trainset = get_heart_dataset(mode='train', used_labels = None,order = sub_order)
