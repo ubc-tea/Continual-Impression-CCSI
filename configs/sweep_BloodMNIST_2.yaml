@@ -102,7 +102,7 @@ parameters:
     data:
         value: BloodMnist
     image_size:
-        value: 28
+        value: 32
     resolution:
         value: 32
     start_generate_phase:

@@ -88,9 +88,8 @@ parameters:
         value: True
     project_name:
         value: github
-    
     image_size:
-        value: 28
+        value: 32
     small_model:
         value: True
     data:
