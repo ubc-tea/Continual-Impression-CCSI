@@ -25,24 +25,14 @@ def compute_features(tg_feature_model, evalloader, num_samples, num_features, de
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     tg_feature_model.eval()
 
-    #evalset = torchvision.datasets.CIFAR100(root='./data', train=False,
-    #                                   download=False, transform=transform_test)
-    #evalset.test_data = input_data.astype('uint8')
-    #evalset.test_labels = np.zeros(input_data.shape[0])
-    #evalloader = torch.CCSI_utils.data.DataLoader(evalset, batch_size=128,
-    #    shuffle=False, num_workers=2)
-
     features = np.zeros([num_samples, num_features])
     print(features.shape)
     start_idx = 0
     with torch.no_grad():
         for inputs, targets in evalloader:
-            # print(inputs.shape,targets.shape)
             inputs = inputs.to(device)
-            # print(tg_feature_model(inputs).shape)
             out = tg_feature_model(inputs)
             out = out.view(out.size(0), -1)
-            # print(out.view(out.size(0), -1).shape)
             features[start_idx:start_idx+inputs.shape[0], :] = np.squeeze(out.view(out.size(0), -1).cpu())
             start_idx = start_idx+inputs.shape[0]
     assert(start_idx==num_samples)

@@ -937,7 +937,7 @@ for iteration_total in range(args.nb_runs):
                 testset.targets = map_Y_valid_ori
                 testloader = torch.utils.data.DataLoader(testset, batch_size=eval_batch_size,
                                                          shuffle=False, num_workers=2)
-                ori_acc = compute_accuracy(tg_model, tg_feature_model, None, testloader,device=device)
+                ori_acc = compute_accuracy(tg_model, testloader,device=device)
                 top1_acc_list_ori[iteration, :, iteration_total] = np.array(ori_acc).T
                 ##############################################################
                 # Calculate validation error of model on the cumul of classes:
@@ -951,7 +951,7 @@ for iteration_total in range(args.nb_runs):
                 if iteration == (args.nb_phases):
                     metrics = {"Best Acc": cumul_acc[0]}
                     wandb.log(metrics)
-                cumul_acc = compute_accuracy(tg_model, tg_feature_model, None, testloader,device=device)
+                cumul_acc = compute_accuracy(tg_model, testloader,device=device)
                 top1_acc_list_cumul[iteration, :, iteration_total] = np.array(cumul_acc).T
                 ##############################################################
                 # Calculate confusion matrix

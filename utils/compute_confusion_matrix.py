@@ -23,12 +23,6 @@ def compute_confusion_matrix(tg_model,evalloader, device=None):
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     tg_model.eval()
 
-    #evalset = torchvision.datasets.CIFAR100(root='./data', train=False,
-    #                                   download=False, transform=transform_test)
-    #evalset.test_data = input_data.astype('uint8')
-    #evalset.test_labels = input_labels
-    #evalloader = torch.CCSI_utils.data.DataLoader(evalset, batch_size=128,
-    #    shuffle=False, num_workers=2)
 
     correct = 0
     total = 0
@@ -36,7 +30,7 @@ def compute_confusion_matrix(tg_model,evalloader, device=None):
     all_targets = []
     all_predicted = []
     with torch.no_grad():
-        for batch_idx, (inputs, targets) in enumerate(eval_loader):
+        for batch_idx, (inputs, targets) in enumerate(evalloader):
             inputs, targets = inputs.to(device), targets.to(device)
             total += targets.size(0)
             all_targets.append(targets.cpu())
@@ -45,8 +39,5 @@ def compute_confusion_matrix(tg_model,evalloader, device=None):
             _, predicted = outputs.max(1)
             correct += predicted.eq(targets).sum().item()
             all_predicted.append(predicted.cpu())
-
-            # print(sqd_icarl.shape, score_icarl.shape, predicted_icarl.shape, \
-                  # sqd_ncm.shape, score_ncm.shape, predicted_ncm.shape)
 
     return confusion_matrix(np.concatenate(all_targets), np.concatenate(all_predicted))
