@@ -1,0 +1,105 @@
+program: New_Medical_class_incremental_cosine_Deepinversion.py
+method: grid
+metric:
+    goal: maximize
+    name: Best Acc
+parameters:
+    lr:
+        values: [0.001,0.01,0.1]
+    batch_size_1: 
+        value: 40
+    input_dim:
+        value: 3
+    main_directory:
+        value: /home/s.ayromlou/CVPR19_Incremental_Learning/cifar100-class-incremental/sweep_checkpoint_medmnist
+    ckp_prefix:
+        value: class_incremental_MR_LFAD_cosine_small
+    random_seed:
+        value: 0
+    nb_cl_fg:
+        value: 2
+    nb_cl:
+        value: 2
+    nb_phases: 
+        value: 1
+    num_classes: 
+        value: 8
+    epochs: 
+        value: 100
+    rs_ratio: 
+        value: 0.66
+    dist:
+        value: 0.3
+    K: 
+        value: 1
+    lw_mr: 
+        value: 1
+    bs: 
+        value: 32 
+    setting_id: 
+        value: 1 
+    generation_lr: 
+        value: 0.05
+    adi_scale: 
+        value: 0.0 
+    tv_l2: 
+        value: 0.01
+    r_feature: 
+        value: 1
+    l2: 
+        value: 0.1
+    main_loss_multiplier:
+        value: 10
+    cosine_normalization:
+        value: True
+    imprint_weights:
+        value: True
+    adapt_lamda:
+        value: True
+    less_forget:
+        value: True
+    mr_loss:
+        value: True
+    do_flip:
+        value: True
+
+    validate:
+        value: True
+    mode:
+        value: paper2
+    save_samples_dir:
+        value: /home/s.ayromlou/CVPR19_Incremental_Learning/cifar100-class-incremental/saved_Sample_3_2
+    use_mean_initialization:
+        value: true
+    beta_2:
+        value: 0.9
+    random_label:
+        value: true
+
+    alpha_3:
+        value: 1
+    CL:
+        value: 1
+    ro:
+        value: 0.99
+    temprature:
+        value: 1
+    cuda_number:
+        value: 0
+    continual_norm:
+        value: True
+    project_name:
+        value: Sockeye_runs_medmnist
+    
+    image_size:
+        value: 28
+    small_model:
+        value: True
+    medmnist:
+        value: BloodMnist
+early_terminate:
+    type: hyperband
+    s: 2
+    eta: 3
+    max_iter: 5    
+project: Sockeye_runs_medmnist
