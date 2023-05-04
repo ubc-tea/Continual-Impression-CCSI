@@ -277,8 +277,20 @@ parser.add_argument('--lw_ms', default=1, type=float, \
 
 #####################################################################################################
 
-print("I'm runining")
 args = parser.parse_args()
+os.environ["WANDB_API_KEY"] = args.wandb_key
+wandb.init(project= args.project_name , entity=args.wandb_acc,config=args)
+
+if args.small_model:
+    if args.cosine_normalization:
+            from models.Medical_predictor_model_3_layers_modified import ResNet,ResidualBlock
+    else:
+            from models.Medical_predictor_model_3_layers import ResNet,ResidualBlock
+else:
+    if args.cosine_normalization:
+            from models.Medical_predictor_model_modified import ResNet,ResidualBlock
+    else:
+            from models.Medical_predictor_model import ResNet,ResidualBlock
 
 if args.continual_norm:
     from data_synthesise.medical_deepinversion_GN import DeepInversionClass
@@ -286,16 +298,6 @@ elif args.look_back:
     from data_synthesise.medical_deepinversion_look_back import DeepInversionClass
 else:
     from data_synthesise.medical_deepinversion import DeepInversionClass
-
-if args.cosine_normalization:
-        from models.Medical_predictor_model_3_layers_modified import ResNet,ResidualBlock
-else:
-        from models.Medical_predictor_model_3_layers import ResNet,ResidualBlock
-
-#TODO delete
-os.environ["WANDB_API_KEY"] = args.wandb_key
-# os.environ["WANDB_MODE"] = "offline"
-wandb.init(project= args.project_name , entity=args.wandb_acc,config=args)
 
 ########################################
 train_batch_size       = args.batch_size_1            # Batch size for train
@@ -451,10 +453,12 @@ for iteration_total in range(args.nb_runs):
             ############################################################
             print("making original model")
             if args.small_model:
-                print("small resnet original model with layers 2 2 2 ")
+                print("small resnet original model with layers 1 1 1 ")
                 tg_model = ResNet(ResidualBlock, [1, 1, 1],input_dim=args.input_dim,num_classes=(iteration-start_iter)*args.nb_cl+args.nb_cl_fg).to(device)
-            # if args.cosine_normalization:
-            #     tg_model.fc = modified_linear.CosineLinear(2048, args.nb_cl_fg)
+            else:
+                print("resnet original model with layers 2 2 2 2 ")
+                tg_model = ResNet(ResidualBlock, [2, 2, 2, 2],input_dim=args.input_dim,num_classes=(iteration-start_iter)*args.nb_cl+args.nb_cl_fg).to(device)
+
 
             ref_model = None
             new_feature = args.nb_cl

@@ -65,13 +65,9 @@ class ResNet(nn.Module):
         out = self.bn(out)
         out = self.relu(out)
         out = self.layer1(out)
-        # out=nn.Dropout(p=0.3)(out)
         out = self.layer2(out)
-        # out=nn.Dropout(p=0.3)(out)
         out = self.layer3(out)
-        # out=nn.Dropout(p=0.3)(out)
         out = self.avg_pool(out)
         out = out.view(out.size(0), -1)
         out = self.fc(out)
-        # out = self.sm(out)
         return out
