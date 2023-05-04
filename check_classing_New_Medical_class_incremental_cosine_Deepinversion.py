@@ -459,8 +459,8 @@ for iteration_total in range(args.nb_runs):
             if args.small_model:
                 print("small resnet original model with layers 2 2 2 ")
                 tg_model = ResNet(ResidualBlock, [1, 1, 1],input_dim=args.input_dim,num_classes=(iteration-start_iter)*args.nb_cl+args.nb_cl_fg).to(device)
-            if args.cosine_normalization:
-                tg_model.fc = modified_linear.CosineLinear(2048, args.nb_cl_fg)
+            # if args.cosine_normalization:
+            #     tg_model.fc = modified_linear.CosineLinear(2048, args.nb_cl_fg)
 
             ref_model = None
             new_feature = args.nb_cl
