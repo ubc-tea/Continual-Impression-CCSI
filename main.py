@@ -28,6 +28,7 @@ from dataloader.heart_loader import get_heart_dataset
 from models.layers.continual_normalization.cn_utils import *
 from utils.compute_confusion_matrix import compute_confusion_matrix
 from utils.utils import compute_mean_images
+from data_synthesis.continual_class_specific_impression import ImpressionClass
 
 import wandb
 from utils.compute_features import compute_features
@@ -290,12 +291,6 @@ else:
     else:
             from models.Medical_predictor_model import ResNet,ResidualBlock
 
-if args.continual_norm:
-    from data_synthesise.medical_deepinversion_GN import DeepInversionClass
-elif args.look_back:
-    from data_synthesise.medical_deepinversion_look_back import DeepInversionClass
-else:
-    from data_synthesise.medical_deepinversion import DeepInversionClass
 
 ########################################
 train_batch_size       = args.batch_size_1            # Batch size for train
@@ -743,41 +738,23 @@ for iteration_total in range(args.nb_runs):
                 main_ckp_prefix = main_ckp_prefix + '_bsg_' + str(args.bs) + '_lrg_' + str(args.generation_lr) + '_rfg_' + str(args.r_feature) + '_tv_l2g_' + str(args.tv_l2) + '_l2g_' + str(args.l2) + '_beta2_' +str(args.beta_2)  + '_alpha3_'+str(args.alpha_3) + '_dist_' + str(args.dist)+  '_mlm_'+ str(args.main_loss_multiplier)
             print("new_checkpoint_prefix: ")
             print(main_ckp_prefix)
-            # wandb.run.name = '{}_run_{}_iteration_{}_model.pth'.format(main_ckp_prefix, iteration_total, iteration)
-            # wandb.run.save()
-            #trained tg_model
             if args.generate_more:
                 generation_path = "generation_more_optimized"
             else:
                 generation_path = "generations"
             # final images will be stored here:
             adi_data_path =  args.main_directory + '/final_images/{}_run_{}_iteration_{}_model.pth'.format(main_ckp_prefix, iteration_total, iteration)
-            if args.use_mean_initialization:
-                # temporal data and generations will be stored here
-                exp_name = args.main_directory + '/{}/{}_run_{}_iteration_{}_model.pth'.format(generation_path,main_ckp_prefix, iteration_total, iteration)
 
-
-                generated_batch_add = args.main_directory + '/{}/{}_gerated_data_run_{}_iteration_{}.pkl'.format(generation_path,main_ckp_prefix, iteration_total, iteration)
-                generated_target_add = args.main_directory + '/{}/{}_gerated_label_run_{}_iteration_{}.pkl'.format(generation_path,main_ckp_prefix, iteration_total, iteration)
-
-                print("generated_batch_add",generated_batch_add)
-                print("generated_samples",exp_name)
-            else:
-                # temporal data and generations will be stored here
-                exp_name = args.main_directory + '/{}/{}_run_{}_iteration_{}_rand_model.pth'.format(generation_path,main_ckp_prefix, iteration_total, iteration)
-
-
-                generated_batch_add =  args.main_directory + '/{}/{}_gerated_data_run_{}_iteration_{}_rand.pkl'.format(generation_path,main_ckp_prefix, iteration_total, iteration)
-                generated_target_add =  args.main_directory + '/{}/{}_gerated_label_run_{}_iteration_{}_rand.pkl'.format(generation_path,main_ckp_prefix, iteration_total, iteration)
-
-                print("generated_batch_add",generated_batch_add)
+            # temporal data and generations will be stored here
+            exp_name = args.main_directory + '/{}/{}_run_{}_iteration_{}_rand_model.pth'.format(generation_path,main_ckp_prefix, iteration_total, iteration)
+            generated_batch_add =  args.main_directory + '/{}/{}_generated_data_run_{}_iteration_{}_rand.pkl'.format(generation_path,main_ckp_prefix, iteration_total, iteration)
+            generated_target_add =  args.main_directory + '/{}/{}_generated_label_run_{}_iteration_{}_rand.pkl'.format(generation_path,main_ckp_prefix, iteration_total, iteration)
+            print("generated_batch_add",generated_batch_add)
+            print("generated_samples",exp_name)
 
             if args.add_sampler and iteration >= args.start_generate_phase and iteration < args.nb_phases-1:
                 args.iterations = 2000
                 args.start_noise = True
-                # args.detach_student = False
-
-                # args.resolution = args.image_size
                 bs = args.bs
                 jitter = 30
 
@@ -786,14 +763,10 @@ for iteration_total in range(args.nb_runs):
                 parameters["random_label"] = False
                 parameters["start_noise"] = True
                 parameters["detach_student"] = False
-                parameters["do_flip"] = True
-
                 parameters["do_flip"] = args.do_flip
                 parameters["random_label"] = args.random_label
                 parameters["store_best_images"] = args.store_best_images
-
                 criterion = nn.CrossEntropyLoss()
-
                 coefficients = dict()
                 coefficients["r_feature"] = args.r_feature
                 coefficients["first_bn_multiplier"] = args.first_bn_multiplier
@@ -819,57 +792,32 @@ for iteration_total in range(args.nb_runs):
                                                          shuffle=False, num_workers=2)
 
                 cm = compute_confusion_matrix(tg_model, evalloader, device=device)
-
-                if not args.continual_norm:
-                    DeepInversionEngine = DeepInversionClass(net_teacher=tg_model,
-                                                             final_data_path=adi_data_path,
-                                                             path=exp_name,
-                                                             parameters=parameters,
-                                                             setting_id=args.setting_id,
-                                                             bs = bs,
-                                                             use_fp16 = args.fp16,
-                                                             jitter = jitter,
-                                                             criterion=criterion,
-                                                             coefficients = coefficients,
-                                                             network_output_function = network_output_function,
-                                                             hook_for_display = hook_for_display,
-                                                             hook_for_self_eval = hook_for_self_eval,
-                                                             device = device,
-                                                             target_classes_min = 0,
-                                                             target_classes_max = max(map_Y_train),
-                                                             mean_image_dir = 'mean/'+args.data+'/',
-                                                             order_mine = sub_order,
-                                                            medmnist= args.data)
-                else:
-                        #TODO alpha gamma
-                    gamma = 0.5
-                    alpha = torch.FloatTensor([1 for _ in range(tg_model.fc.out_features)])
-                    DeepInversionEngine = DeepInversionClass(net_teacher=tg_model,
-                                                             final_data_path=adi_data_path,
-                                                             path=exp_name,
-                                                             parameters=parameters,
-                                                             setting_id=args.setting_id,
-                                                             bs = bs,
-                                                             use_fp16 = args.fp16,
-                                                             jitter = jitter,
-                                                             criterion=criterion,
-                                                             coefficients = coefficients,
-                                                             network_output_function = network_output_function,
-                                                             hook_for_display = hook_for_display,
-                                                             hook_for_self_eval = hook_for_self_eval,
-                                                             device = device,
-                                                             target_classes_min = 0,
-                                                             target_classes_max = max(map_Y_train),
-                                                             mean_image_dir =  'mean/'+args.data+'/',
-                                                             order_mine = sub_order,
-                                                            cm = cm,
-                                                            alpha = alpha,
-                                                            gamma = gamma,
-                                                            medmnist= args.data,
-                                                            look_back = args.look_back,
-                                                             synthesis= not args.not_synthesis)
-
-
+                gamma = 0.5
+                alpha = torch.FloatTensor([1 for _ in range(tg_model.fc.out_features)])
+                ImpressionEngine = ImpressionClass(net_teacher=tg_model,
+                                                   final_data_path=adi_data_path,
+                                                 path=exp_name,
+                                                 parameters=parameters,
+                                                 setting_id=args.setting_id,
+                                                 bs = bs,
+                                                 use_fp16 = args.fp16,
+                                                 jitter = jitter,
+                                                 criterion=criterion,
+                                                 coefficients = coefficients,
+                                                 network_output_function = network_output_function,
+                                                 hook_for_display = hook_for_display,
+                                                 hook_for_self_eval = hook_for_self_eval,
+                                                 device = device,
+                                                 target_classes_min = 0,
+                                                 target_classes_max = max(map_Y_train),
+                                                 mean_image_dir =  'mean/'+args.data+'/',
+                                                 order_mine = sub_order,
+                                                cm = cm,
+                                                alpha = alpha,
+                                                gamma = gamma,
+                                                data= args.data,
+                                                look_back = args.look_back,
+                                                 synthesis= not args.not_synthesis)
 
 
                 if args.generate_more:
@@ -881,15 +829,14 @@ for iteration_total in range(args.nb_runs):
                     number_of_batches = 1
                 print("number of generated batch loops",number_of_batches)
                 for j in range(number_of_batches):
-                    generated , targets = DeepInversionEngine.generate_batch(net_student=None,use_mean_initialization = args.use_mean_initialization, beta_2 = args.beta_2)
-
+                    generated , targets = ImpressionEngine.generate_batch(net_student=None,use_mean_initialization = args.use_mean_initialization, beta_2 = args.beta_2)
                     X_protoset_cumuls.append(generated)
                     Y_protoset_cumuls.append(targets)
                     with open(generated_batch_add,'wb') as f:
                         pickle.dump(X_protoset_cumuls, f)
                     with open(generated_target_add,'wb') as f:
                         pickle.dump(Y_protoset_cumuls, f)
-                for hook in DeepInversionEngine.loss_r_feature_layers:
+                for hook in ImpressionEngine.loss_r_feature_layers:
                     hook.close()
             else:
                 if os.path.exists(generated_batch_add):
@@ -905,9 +852,7 @@ for iteration_total in range(args.nb_runs):
 
         # Calculate validation error of model on the first nb_cl classes:
         if args.validate:
-            # if (args.load_dricet_mode and iteration == args.start_generate_phase) or args.load_dricet_mode == False:
             if (args.load_dricet_mode) or args.load_dricet_mode == False:
-
                 map_Y_valid_ori = np.array([order_list.index(i) for i in Y_valid_ori])
                 print('Computing accuracy on the original batch of classes...')
                 testset.data = X_valid_ori
@@ -935,17 +880,5 @@ for iteration_total in range(args.nb_runs):
                 print('Computing confusion matrix...')
                 cm = compute_confusion_matrix(tg_model, evalloader,device=device)
                 print(cm)
-                # cm_name = './sweep_checkpoint/{}_run_{}_iteration_{}_confusion_matrix.pth'.format(main_ckp_prefix,iteration_total, iteration)
-                # with open(cm_name, 'wb') as f:
-                #     pickle.dump(cm, f) #for reading with Python 2
+
             ##############################################################
-
-    # Final save of the data
-    # torch.save(top1_acc_list_ori, \
-    #     './sweep_checkpoint/{}_run_{}_top1_acc_list_ori.pth'.format(main_ckp_prefix, iteration_total))
-    # torch.save(top1_acc_list_cumul, \
-    #     './sweep_checkpoint/{}_run_{}_top1_acc_list_cumul.pth'.format(main_ckp_prefix, iteration_total))
-
-
-
-
