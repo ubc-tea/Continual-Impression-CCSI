@@ -444,7 +444,7 @@ class ImpressionClass(object):
                                 acc = 0
 
                             if self.hook_for_self_eval is not None:
-                                acc_self,_ = self.hook_for_self_eval(inputs, targets)
+                                acc_self = self.hook_for_self_eval(inputs, targets)
                             else:
                                 acc_self = 0
 
@@ -483,7 +483,7 @@ class ImpressionClass(object):
 
             
             optimizer.state = collections.defaultdict(dict)
-            acc_self,accepted_ones = self.hook_for_self_eval(inputs, targets)
+            acc_self = self.hook_for_self_eval(inputs, targets)
 
         else:
             best_inputs = inputs.data.clone()
