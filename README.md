@@ -12,14 +12,19 @@ by [Sana Ayromlou](https://github.com/sanaAyrml), Tresa Tsang, Prang Abolmaesumi
 Two main steps of **CCSI** contain: 1) Continual class-specific data synthesis: Initialize a batch of images with the mean of each class to synthesize images using a frozen model trained on the previous task. Update the batch by back-propagating and using the moments saved in the CN as a regularization term; 2) Model update on new tasks: Leverage information from the previous model using the distillation loss. Overcome data imbalance and prevent catastrophic forgetting of past tasks with the cosine normalized cross-entropy (CN-CE) loss and margin loss. Mitigate domain shift between synthesized and original data with a novel intra-domain conservative (IdC) loss, a semi-supervised domain adaptation technique.
 ## Sections
 The main folder contains the code implemented for the MedMNIST dataset. You can get access to MedMNIST dataset via [Zendo](https://doi.org/10.5281/zenodo.6496656). You could also use our code to download automatically by setting `download=True` in `get_medmnist_dataset` function at [`dataset_utils.py`](dataloader/dataset_utils.py).
+
 ### Dataloader
 
 ### Model
 
 ### Wandb
-If you want to enable the wandb log place config['wandb']= True in get_config.py and replace your directory and project name accordingly in train.py.
+
 ### Config
+
 ### Training Scheme
+
+### Synthesis Scheme
+
 ### Visualization
 
 ## Main Results
