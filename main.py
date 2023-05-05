@@ -727,9 +727,6 @@ for iteration_total in range(args.nb_runs):
                                                   da_coef=args.da_coef, alpha_3=args.alpha_3,temprature=args.temprature, \
                                                   weight_per_class = torch.tensor(weights).float().to(device) , continual_norm= args.continual_norm)
 
-
-
-
         ### Exemplars
         nb_protos_cl = args.nb_protos
         nn.Sequential(*list(tg_model.children())[:-1])

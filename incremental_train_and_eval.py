@@ -234,5 +234,5 @@ def incremental_train_and_eval(ckpt_dir,epochs, tg_model, ref_model, tg_optimize
         handle_cur_features.remove()
         handle_old_scores_bs.remove()
         handle_new_scores_bs.remove()
-        
+
     return best_model
