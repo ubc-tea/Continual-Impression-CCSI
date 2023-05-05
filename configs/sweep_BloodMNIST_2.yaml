@@ -1,4 +1,4 @@
-program: run_ccsi.py
+program: main.py
 method: grid
 metric:
     goal: maximize
