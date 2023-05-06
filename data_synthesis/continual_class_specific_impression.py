@@ -209,7 +209,6 @@ class ImpressionClass(object):
             self.l2_scale = coefficients["l2"]
             self.lr = coefficients["lr"]
             self.main_loss_multiplier = coefficients["main_loss_multiplier"]
-            self.adi_scale = coefficients["adi_scale"]
         else:
             print("Provide a dictionary with ")
 

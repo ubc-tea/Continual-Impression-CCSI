@@ -165,8 +165,6 @@ parser.add_argument('--bs', default=64, type=int,
                     help='batch size for generation')
 parser.add_argument('--jitter', default=30, type=int,
                     help='batch size')
-parser.add_argument('--adi_scale', type=float, default=0.0,
-                    help='Coefficient for Adaptive Deep Inversion')
 parser.add_argument('--fp16', default=False, type=bool,
                     help='use FP16 for optimization')
 parser.add_argument('--do_flip', default=False, type=bool,
@@ -783,7 +781,6 @@ for iteration_total in range(args.nb_runs):
                 coefficients["l2"] = args.l2
                 coefficients["lr"] = args.generation_lr
                 coefficients["main_loss_multiplier"] = args.main_loss_multiplier
-                coefficients["adi_scale"] = args.adi_scale
 
                 network_output_function = lambda x: x
 

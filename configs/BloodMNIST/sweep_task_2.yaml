@@ -13,7 +13,7 @@ parameters:
   main_directory:
     value: ../saved_models
   ckp_prefix:
-    value: class_incremental_MR_LFAD_cosine_small
+    value: bloodMNIST
   random_seed:
     value: 0
   nb_cl_fg:
@@ -40,8 +40,6 @@ parameters:
     value: 1
   generation_lr:
     value: 0.05
-  adi_scale:
-    value: 0.0
   tv_l2:
     value: 0.01
   r_feature:
@@ -49,7 +47,7 @@ parameters:
   l2:
     value: 0.1
   main_loss_multiplier:
-    value: 10
+    value: 1
   cosine_normalization:
     value: True
   imprint_weights:
@@ -65,11 +63,11 @@ parameters:
   resume:
     value: True
   sampler_type:
-    value: paper2
+    value: CCSI
   add_sampler:
     value: True
   mode:
-    value: paper2_mean_adapt_margin_CN
+    value: CCSI
   add_data:
     value: True
   use_mean_initialization:
@@ -98,7 +96,7 @@ parameters:
   small_model:
     value: True
   project_name:
-    value: githun
+    value: github
   data:
     value: BloodMnist
   image_size:
@@ -110,7 +108,7 @@ parameters:
   load_dricet_mode:
     value: True
   saved_model_address:
-    value: ../saved_models/class_incremental_MR_LFAD_cosine_small_nb_cl_fg_2_nb_cl_2_lr_0.01_bs_40_run_0_iteration_0_model.pth
+    value: ../saved_models/previous_task_model_address
   wandb_key:
     value: your_key
   wandb_acc:
