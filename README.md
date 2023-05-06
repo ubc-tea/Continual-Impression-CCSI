@@ -45,8 +45,6 @@ setting `download_data=True` in Config.
 
 ### Synthesis Scheme
 
-### Visualization
-
 ## Main Results
 
 ## Acknowledgement
