@@ -64,7 +64,7 @@ def mom_cosine_policy(base_beta, warmup_length, epochs):
     return beta_policy(_beta_fn)
 
 
-def clip(image_tensor, dim = 1,use_fp16=False):
+def clip(image_tensor, dim=1, use_fp16=False):
     '''
     adjust the input based on mean and variance
     '''
@@ -97,7 +97,8 @@ def denormalize(image_tensor, use_fp16=False):
 
     return image_tensor
 
-def compute_mean_images(trainset,args):
+
+def compute_mean_images(trainset, args):
     view_classes = trainset.view_classes
     w = [[] for i in range(len(view_classes))]
     for i, label in enumerate(trainset.targets):
@@ -116,9 +117,9 @@ def compute_mean_images(trainset,args):
     integrated_image += item
 
     vutils.save_image(item,
-                      dir +'/label_' + str(trainset.__getitem__(i[j])[1]) + "_" + "sample.png",
+                      dir + '/label_' + str(trainset.__getitem__(i[j])[1]) + "_" + "sample.png",
                       normalize=False, scale_each=True, nrow=int(1))
 
     vutils.save_image(integrated_image / len(i),
-                      dir +'/label_' + str(trainset.__getitem__(i[j])[1]) + "_" + "integrated.png",
+                      dir + '/label_' + str(trainset.__getitem__(i[j])[1]) + "_" + "integrated.png",
                       normalize=False, scale_each=True, nrow=int(1))

@@ -3,10 +3,12 @@ import torch.nn as nn
 import torchvision
 import torchvision.transforms as transforms
 
+
 # 3x3 convolution
 def conv3x3(in_channels, out_channels, stride=1):
-    return nn.Conv2d(in_channels, out_channels, kernel_size=3, 
+    return nn.Conv2d(in_channels, out_channels, kernel_size=3,
                      stride=stride, padding=1, bias=False)
+
 
 # Residual block
 class ResidualBlock(nn.Module):
@@ -32,15 +34,16 @@ class ResidualBlock(nn.Module):
         out = self.relu(out)
         return out
 
+
 # ResNet
 class ResNet(nn.Module):
-    def __init__(self, block, layers,input_dim=3, num_classes=10):
+    def __init__(self, block, layers, input_dim=3, num_classes=10):
         super(ResNet, self).__init__()
         self.in_channels = 16
-        self.conv = conv3x3(input_dim, 16,2)
+        self.conv = conv3x3(input_dim, 16, 2)
         self.bn = nn.BatchNorm2d(16)
         self.relu = nn.ReLU(inplace=True)
-        self.layer1 = self.make_layer(block, 16, layers[0],2)
+        self.layer1 = self.make_layer(block, 16, layers[0], 2)
         self.layer2 = self.make_layer(block, 32, layers[1], 2)
         self.layer3 = self.make_layer(block, 64, layers[2], 2)
         self.layer4 = self.make_layer(block, 128, layers[2], 2)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
-#!/usr/bin/env python
+# !/usr/bin/env python
 # coding=utf-8
 import torch
 import torch.nn as nn
@@ -20,6 +20,7 @@ from scipy.spatial.distance import cdist
 from sklearn.metrics import confusion_matrix
 from utils_pytorch import *
 
+
 def compute_features(tg_feature_model, evalloader, num_samples, num_features, device=None):
     if device is None:
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -33,7 +34,7 @@ def compute_features(tg_feature_model, evalloader, num_samples, num_features, de
             inputs = inputs.to(device)
             out = tg_feature_model(inputs)
             out = out.view(out.size(0), -1)
-            features[start_idx:start_idx+inputs.shape[0], :] = np.squeeze(out.view(out.size(0), -1).cpu())
-            start_idx = start_idx+inputs.shape[0]
-    assert(start_idx==num_samples)
+            features[start_idx:start_idx + inputs.shape[0], :] = np.squeeze(out.view(out.size(0), -1).cpu())
+            start_idx = start_idx + inputs.shape[0]
+    assert (start_idx == num_samples)
     return features

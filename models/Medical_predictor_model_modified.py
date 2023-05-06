@@ -4,13 +4,14 @@ from models.layers import modified_linear
 
 # 3x3 convolution
 def conv3x3(in_channels, out_channels, stride=1):
-    return nn.Conv2d(in_channels, out_channels, kernel_size=3, 
+    return nn.Conv2d(in_channels, out_channels, kernel_size=3,
                      stride=stride, padding=1, bias=False)
+
 
 # Residual block
 class ResidualBlock(nn.Module):
     expansion = 1
-    
+
     def __init__(self, in_channels, out_channels, stride=1, downsample=None, last=False):
         super(ResidualBlock, self).__init__()
         self.conv1 = conv3x3(in_channels, out_channels, stride)
@@ -32,26 +33,27 @@ class ResidualBlock(nn.Module):
         if self.downsample:
             residual = self.downsample(x)
         out += residual
-        if not self.last: #remove ReLU in the last layer
+        if not self.last:  # remove ReLU in the last layer
             out = self.relu(out)
         return out
 
+
 # ResNet
 class ResNet(nn.Module):
-    def __init__(self, block, layers,input_dim=3, num_classes=10):
+    def __init__(self, block, layers, input_dim=3, num_classes=10):
         self.inplanes = 16
         super(ResNet, self).__init__()
         self.in_channels = 16
-        self.conv = conv3x3(input_dim, 16,2 )
+        self.conv = conv3x3(input_dim, 16, 2)
         self.bn = nn.BatchNorm2d(16)
         self.relu = nn.ReLU(inplace=True)
-        self.layer1 = self._make_layer(block, 16, layers[0],2)
+        self.layer1 = self._make_layer(block, 16, layers[0], 2)
         self.layer2 = self._make_layer(block, 32, layers[1], 2)
         self.layer3 = self._make_layer(block, 64, layers[2], 2)
-        self.layer4 = self._make_layer(block, 128, layers[3], 2,last_phase=True)
+        self.layer4 = self._make_layer(block, 128, layers[3], 2, last_phase=True)
         self.avg_pool = nn.AvgPool2d(7)
         self.fc = modified_linear.CosineLinear(128 * block.expansion, num_classes)
-        
+
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
@@ -72,10 +74,10 @@ class ResNet(nn.Module):
         layers.append(block(self.inplanes, planes, stride, downsample))
         self.inplanes = planes * block.expansion
         if last_phase:
-            for i in range(1, blocks-1):
+            for i in range(1, blocks - 1):
                 layers.append(block(self.inplanes, planes))
             layers.append(block(self.inplanes, planes, last=True))
-        else: 
+        else:
             for i in range(1, blocks):
                 layers.append(block(self.inplanes, planes))
 

@@ -52,8 +52,10 @@ class CIFeatureHook():
 
         self.r_feature = r_feature
         # must have no output
+
     def close(self):
         self.hook.remove()
+
 
 class CCSIFeatureHook():
     '''
@@ -73,7 +75,8 @@ class CCSIFeatureHook():
         # forcing mean and variance to match between two distributions
         # other ways might work better, i.g. KL divergence
         r_feature = torch.norm(module.group_running_var.data - module.total_var.data, 2) + torch.norm(
-            module.group_running_mean.data - module.total_mean.data, 2) + torch.norm(module.running_var.data - var,2) + torch.norm(
+            module.group_running_mean.data - module.total_mean.data, 2) + torch.norm(module.running_var.data - var,
+                                                                                     2) + torch.norm(
             module.running_mean.data - mean, 2)
 
         self.r_feature = r_feature
@@ -95,11 +98,13 @@ def get_image_prior_losses(inputs_jit):
             diff3.abs() / 255.0).mean() + (diff4.abs() / 255.0).mean()
     loss_var_l1 = loss_var_l1 * 255.0
     return loss_var_l1, loss_var_l2
-def save_images(inputs,targets, variance, prefix,base_iteration, save_every, local_rank):
+
+
+def save_images(inputs, targets, variance, prefix, base_iteration, save_every, local_rank):
     print("saving image dir", prefix)
     vutils.save_image(inputs, '{}/best_images/output_{:05d}_gpu_{}_first.png'.format(prefix,
-                                                                                           (base_iteration) // save_every,
-                                                                                           local_rank),
+                                                                                     (base_iteration) // save_every,
+                                                                                     local_rank),
                       normalize=True, scale_each=True, nrow=int(10))
     plt.style.use('dark_background')
     image = plt.imread('{}/best_images/output_{:05d}_gpu_{}_first.png'.format(prefix,
@@ -135,9 +140,9 @@ class ImpressionClass(object):
                  alpha=None,
                  gamma=None,
                  data='BloodMnist',
-                 look_back = False,
-                 synthesis= True,
-                 order_mine = None):
+                 look_back=False,
+                 synthesis=True,
+                 order_mine=None):
         '''
         :param bs: batch size per GPU for image generation
         :param use_fp16: use FP16 (or APEX AMP) for model inversion, uses less memory and is faster for GPUs with Tensor Cores
@@ -302,7 +307,6 @@ class ImpressionClass(object):
                 torch.FloatTensor).to(self.device)
         inputs_layer.requires_grad = False
 
-
         if self.data == 'BloodMnist' or self.data == 'PathMnist' or self.data == 'TissueMnist' or self.data == 'OrganaMnist':
             mean = [0, 0, 0]
             std = [1, 1, 1]
@@ -320,19 +324,19 @@ class ImpressionClass(object):
                 if self.synthesis:
                     if self.data == 'BloodMnist' or self.data == 'PathMnist':
                         inputs_layer[t] = inputs_layer[t] / 10 + torch.reshape(image_array, (
-                        3, self.image_resolution, self.image_resolution))
+                            3, self.image_resolution, self.image_resolution))
                     elif self.data == 'TissueMnist' or self.data == 'OrganAMnist':
                         inputs_layer[t] = inputs_layer[t] / 10 + torch.reshape(image_array[0, :, :], (
-                        1, self.image_resolution, self.image_resolution))
+                            1, self.image_resolution, self.image_resolution))
                     else:
                         inputs_layer[t] = inputs_layer[t] / 10 + torch.reshape(image_array[:, :, 0], (
-                        1, self.image_resolution, self.image_resolution))
+                            1, self.image_resolution, self.image_resolution))
                 else:
                     if self.data == 'BloodMnist' or self.data == 'PathMnist':
                         inputs_layer[t] = torch.reshape(image_array, (
                             3, self.image_resolution, self.image_resolution))
                     elif self.data == 'TissueMnist' or self.data == 'OrganAMnist':
-                        inputs_layer[t] =  torch.reshape(image_array[0, :, :], (
+                        inputs_layer[t] = torch.reshape(image_array[0, :, :], (
                             1, self.image_resolution, self.image_resolution))
                     else:
                         inputs_layer[t] = torch.reshape(image_array[:, :, 0], (
@@ -427,7 +431,6 @@ class ImpressionClass(object):
                                self.bn_reg_scale * loss_r_feature + \
                                self.l2_scale * loss_l2
 
-
                     loss = self.main_loss_multiplier * loss + loss_aux
 
                     if local_rank == 0:
@@ -481,7 +484,6 @@ class ImpressionClass(object):
                             save_images(inputs, targets, variance, self.prefix, self.base_iteration, save_every,
                                         local_rank)
 
-            
             optimizer.state = collections.defaultdict(dict)
             acc_self = self.hook_for_self_eval(inputs, targets)
 
@@ -495,7 +497,6 @@ class ImpressionClass(object):
         self.base_iteration += iteration
         print("iteratiooooooooon ======================", iteration)
         return best_inputs, targets
-
 
     def generate_batch(self, net_student=None, targets=None, use_mean_initialization=False, beta_2=0.9):
 

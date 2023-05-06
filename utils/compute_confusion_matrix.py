@@ -18,11 +18,11 @@ from scipy.spatial.distance import cdist
 from sklearn.metrics import confusion_matrix
 from utils_pytorch import *
 
-def compute_confusion_matrix(tg_model,evalloader, device=None):
+
+def compute_confusion_matrix(tg_model, evalloader, device=None):
     if device is None:
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     tg_model.eval()
-
 
     correct = 0
     total = 0
