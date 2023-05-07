@@ -9,19 +9,19 @@ parameters:
   batch_size_1:
     value: 40
   input_dim:
-    value: 3
+    value: 1
   main_directory:
     value: ../saved_models
   ckp_prefix:
-    value: class_incremental_MR_LFAD_cosine_small
+    value: tissueMNIST
   random_seed:
-    value: 0
+    value: 3
   nb_cl_fg:
     value: 2
   nb_cl:
     value: 2
   nb_phases:
-    value: 2
+    value: 4
   num_classes:
     value: 8
   epochs:
@@ -40,16 +40,14 @@ parameters:
     value: 1
   generation_lr:
     value: 0.05
-  adi_scale:
-    value: 0.0
   tv_l2:
-    value: 0.01
+    value: 0.001
   r_feature:
     value: 1
   l2:
     value: 0.1
   main_loss_multiplier:
-    value: 10
+    value: 1
   cosine_normalization:
     value: True
   imprint_weights:
@@ -65,11 +63,11 @@ parameters:
   resume:
     value: True
   sampler_type:
-    value: paper2
+    value: CCSI
   add_sampler:
     value: True
   mode:
-    value: paper2_mean_adapt_margin_CN
+    value: CCSI
   add_data:
     value: True
   use_mean_initialization:
@@ -79,7 +77,7 @@ parameters:
   random_label:
     value: true
   nb_generation:
-    value: 16
+    value: 30
   generate_more:
     value: true
   alpha_3:
@@ -89,7 +87,7 @@ parameters:
   ro:
     value: 0.9
   temprature:
-    value: 1
+    value: 5
   cuda_number:
     value: 0
 
@@ -98,19 +96,19 @@ parameters:
   small_model:
     value: True
   project_name:
-    value: githun
+    value: github
   data:
-    value: BloodMnist
+    value: TissueMnist
   image_size:
     value: 32
   resolution:
     value: 32
   start_generate_phase:
-    value: 0
+    value: 2
   load_dricet_mode:
     value: True
   saved_model_address:
-    value: ../saved_models/class_incremental_MR_LFAD_cosine_small_nb_cl_fg_2_nb_cl_2_lr_0.01_bs_40_run_0_iteration_0_model.pth
+    value: ../saved_models/previous_task_model_address
   wandb_key:
     value: your_key
   wandb_acc:

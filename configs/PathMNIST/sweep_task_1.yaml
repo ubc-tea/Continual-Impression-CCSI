@@ -5,7 +5,7 @@ metric:
   name: Best Acc
 parameters:
   lr:
-    value: 0.01
+    value: 0.1
   batch_size_1:
     value: 40
   input_dim:
@@ -13,17 +13,17 @@ parameters:
   main_directory:
     value: ../saved_models
   ckp_prefix:
-    value: class_incremental_MR_LFAD_cosine_small
+    value: pathMNIST
   random_seed:
-    value: 0
+    value: 1
   nb_cl_fg:
-    value: 2
+    value: 3
   nb_cl:
     value: 2
   nb_phases:
     value: 1
   num_classes:
-    value: 8
+    value: 9
   epochs:
     value: 100
   rs_ratio:
@@ -35,13 +35,11 @@ parameters:
   lw_mr:
     value: 1
   bs:
-    value: 32
+    value: 40
   setting_id:
     value: 1
   generation_lr:
     value: 0.05
-  adi_scale:
-    value: 0.0
   tv_l2:
     value: 0.01
   r_feature:
@@ -62,11 +60,10 @@ parameters:
     value: True
   do_flip:
     value: True
-
   validate:
     value: True
   mode:
-    value: paper2
+    value: CCSI
   use_mean_initialization:
     value: true
   beta_2:
@@ -92,7 +89,7 @@ parameters:
   small_model:
     value: True
   data:
-    value: BloodMnist
+    value: PathMnist
   wandb_key:
     value: your_key
   wandb_acc:

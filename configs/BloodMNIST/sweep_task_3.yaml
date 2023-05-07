@@ -40,8 +40,6 @@ parameters:
     value: 1
   generation_lr:
     value: 0.05
-  adi_scale:
-    value: 0.0
   tv_l2:
     value: 0.001
   r_feature:
