@@ -135,18 +135,14 @@ parser.add_argument('--data', default='None', type=str,
                     help='data Type')
 parser.add_argument('--image_size', default=224, type=int,
                     help='Image size')
+parser.add_argument('--download_data',  default=False, type=bool,
+                    help='Enable download data')
 
 ##### Model Variables
 parser.add_argument('--cosine_normalization', default=False, type=bool,
                     help='change last layer of networks')
 parser.add_argument('--small_model', default=False, type=bool,
                     help='use model with 3 layers')
-parser.add_argument('--resnet_101', default=False, type=bool,
-                    help='Resnet 101')
-parser.add_argument('--resnet_18', default=False, type=bool,
-                    help='Resnet 18')
-parser.add_argument('--vgg11', default=False, type=bool,
-                    help='Resnet 101')
 parser.add_argument('--enable_drop_out', default=False, type=bool,
                     help='if model got activated dropout in it')
 parser.add_argument('--continual_norm', default=False, type=bool,

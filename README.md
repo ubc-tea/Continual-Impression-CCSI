@@ -31,7 +31,7 @@ adaptation technique.
 
 The main folder contains the code implemented for the MedMNIST dataset. You can get access to MedMNIST dataset
 via [Zendo](https://doi.org/10.5281/zenodo.6496656). You could also use our code to download automatically by
-setting `download=True` in `get_medmnist_dataset` function at [`dataset_utils.py`](dataloader/dataset_utils.py).
+setting `download_data=True` in Config.
 
 ### Dataloader
 

@@ -109,8 +109,7 @@ class Modified_medmnist(TissueMNIST):
         return
 
 
-def get_medmnist_dataset(mode='train', image_size=32):
-    download = False
+def get_medmnist_dataset(mode='train', image_size=32, download=False):
     if mode == 'train':
         dataset = Modified_medmnist(split='train', download=download, as_rgb=False, image_size=image_size)
     elif mode == 'test':
