@@ -40,7 +40,7 @@ Contains modified Resnet model architecture used in CCSI. Folder [models/layers]
 ### Wandb
 We use Wandb sweep to plot our results and hyperparameter tuning. Replace project name and your wandb key in `wandb_acc` and `wandb_key` accordingly in [config](configs) files.
 ### Config
-All hyperparamteres are set in [config](configs) `.yaml` files for each dataset. Each task has a separate confid and hyperparameters which can be adjusted.
+All hyperparamteres are set in [config](configs) as `.yaml` files for each dataset. Each task has a separate confid and hyperparameters which can be adjusted.
 ### Training Scheme
 The class incremental training procedures, loss functions and ... are implemented in [incremental_train_and_eval.py](incremental_train_and_eval.py).
 ### Synthesis Scheme
