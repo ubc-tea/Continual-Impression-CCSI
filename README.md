@@ -31,21 +31,21 @@ adaptation technique.
 
 The main folder contains the code implemented for the MedMNIST dataset. You can get access to MedMNIST dataset
 via [Zendo](https://doi.org/10.5281/zenodo.6496656). You could also use our code to download automatically by
-setting `download_data=True` in Config.
+setting `download_data=True` in [config](configs) files.
 
 ### Dataloader
-
+Contains dataloader impelemented for each of datasets. You can add your own dataloader or adjust the implementation of other dataloaders. Make sure to import your dataloader in train.py.
 ### Model
-
+Contains modified Resnet model architecture used in CCSI. Folder [models/layers](models/layers) contains impelementation of introduced two novel layers **"Cosine Linear and Continual Normalization"**.
 ### Wandb
-
+We use Wandb to plot our results. Replace project name and your wandb key in wandb_acc and wandb_key accordingly in [config](configs) files.
 ### Config
-
+All hyperparamteres are set in [config](configs) files for each dataset. Each task has a seperate confid and hyperparameters which can be adjusted.
 ### Training Scheme
-
+The class incremental training procedures, loss functions and ... are implemented in [incremental_train_and_eval.py](incremental_train_and_eval.py).
 ### Synthesis Scheme
-
-## Main Results
+The continual class specific impression synthesis and its loss functions are implemented in [continual_class_specific_impression.py](data_synthesis/continual_class_specific_impression.py).
+## Install
 
 ## Acknowledgement
 
