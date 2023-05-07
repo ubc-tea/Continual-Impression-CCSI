@@ -34,18 +34,31 @@ via [Zendo](https://doi.org/10.5281/zenodo.6496656). You could also use our code
 setting `download_data=True` in [config](configs) files.
 
 ### Dataloader
-Contains dataloader impelemented for each of datasets. You can add your own dataloader or adjust the implementation of other dataloaders. Make sure to import your dataloader in train.py.
+Contains dataloader implemented for each of datasets. You can add your own dataloader or adjust the implementation of other dataloaders. Make sure to import your dataloader in [main.py](main.py).
 ### Model
-Contains modified Resnet model architecture used in CCSI. Folder [models/layers](models/layers) contains impelementation of introduced two novel layers **"Cosine Linear and Continual Normalization"**.
+Contains modified Resnet model architecture used in CCSI. Folder [models/layers](models/layers) contains implementation of introduced two novel layers **"Cosine Linear and Continual Normalization"**.
 ### Wandb
-We use Wandb to plot our results. Replace project name and your wandb key in wandb_acc and wandb_key accordingly in [config](configs) files.
+We use Wandb sweep to plot our results and hyperparameter tuning. Replace project name and your wandb key in `wandb_acc` and `wandb_key` accordingly in [config](configs) files.
 ### Config
-All hyperparamteres are set in [config](configs) files for each dataset. Each task has a seperate confid and hyperparameters which can be adjusted.
+All hyperparamteres are set in [config](configs) `.yaml` files for each dataset. Each task has a separate confid and hyperparameters which can be adjusted.
 ### Training Scheme
 The class incremental training procedures, loss functions and ... are implemented in [incremental_train_and_eval.py](incremental_train_and_eval.py).
 ### Synthesis Scheme
 The continual class specific impression synthesis and its loss functions are implemented in [continual_class_specific_impression.py](data_synthesis/continual_class_specific_impression.py).
 ## Install
+### Requirements
+
+Requirements can be installed using:
+```
+pip install -r requirements.txt
+```
+### Running the Code
+In order to run the code you use configs provided for each task of each dataset. To run each config:
+
+```
+wandb sweep configs/[dataset_name]/sweep_task_[task_number].yaml
+```
+Your trained models will be saved in `../saved_models/[dataset_name]/[model_name]`. You need to put this address in `saved_model_address` in each config to keep training for following tasks use the same command as above.
 
 ## Acknowledgement
 
