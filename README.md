@@ -1,7 +1,7 @@
 # CCSI
 
 This is the PyTorch implemention of our paper **"CCSI: Continual Class-Specific Impression for Data-free Class
-Incremental Learning"** submitted to TMI, as an extention work of [**"Class Impression for Data-Free Incremental
+Incremental Learning"** accepted to TMI, as an extention work of [**"Class Impression for Data-Free Incremental
 Learning"**](https://link.springer.com/chapter/10.1007/978-3-031-16440-8_31) accpeted by MICCAI 2022
 by [Sana Ayromlou](https://github.com/sanaAyrml), Tresa Tsang, Prang Abolmaesumi
 ,and [Xiaoxiao Li](https://xxlya.github.io/xiaoxiao/)
